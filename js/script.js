@@ -1,10 +1,25 @@
 var state = {board: [], currentGame: [], savedGames: []}
 
 function start() {
+    readLocalStorage();
     createBoard();
     newGame();
     renderSavedGames();
     
+}
+
+function readLocalStorage() {
+    if (!window.localStorage) {
+        return;
+    }
+    var savedGamesFromLocalStorage = window.localStorage.getItem('saved-games');
+    if(savedGamesFromLocalStorage) {
+        state.savedGames = JSON.parse(savedGamesFromLocalStorage);
+    }
+}
+
+function writeToLocalStorage() {
+    window.localStorage.setItem('saved-games', JSON.stringify(state.savedGames));
 }
 
 function addNumberToGame(numberToAdd) {
@@ -52,6 +67,7 @@ function saveGame() {
         return;
     }
     state.savedGames.push(state.currentGame);
+    writeToLocalStorage();
     newGame();
 }
 
@@ -104,7 +120,7 @@ function renderBoard() {
         ulNumber.appendChild(liNumber);
     }
     divBoard.appendChild(ulNumber)
-    }
+}
 
 function handleNumberClick(event) {
     var value = Number(event.currentTarget.textContent);
